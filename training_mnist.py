@@ -54,11 +54,13 @@ datagen.fit(x_train)
 # convert class vectors to binary class matrices
 y_train = keras.utils.to_categorical(y_train, num_classes)
 y_test = keras.utils.to_categorical(y_test, num_classes)
-
+#将灰度图片转为四自由度图片
 R = Input(shape=input_shape)
+
 I = learnVectorBlock(R)
 J = learnVectorBlock(R)
 K = learnVectorBlock(R)
+
 O = concatenate([R, I, J, K], axis=-1)
 O = QuaternionConv2D(64, (5, 5), activation='relu', padding="same", kernel_initializer='quaternion')(O)
 O = QuaternionConv2D(64, (5, 5), activation='relu', padding="same", kernel_initializer='quaternion')(O)

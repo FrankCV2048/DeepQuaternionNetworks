@@ -72,7 +72,12 @@ class TrainValHistory(Callback):
 		self.val_loss  .append(logs.get('val_loss'))
 		self.val_acc   .append(logs.get('val_acc'))
 
-
+#根据分组的进行程调整学习率
+# verbose：日志显示
+# verbose = 0 为不在标准输出流输出日志信息
+# verbose = 1 为输出进度条记录
+# verbose = 2 为每个epoch输出一行记录
+#
 class LrDivisor(Callback):
     def __init__(self, patience=float(50000), division_cst=10.0, epsilon=1e-03, verbose=1, epoch_checkpoints={41, 61}):
         super(Callback, self).__init__()
@@ -91,6 +96,9 @@ class LrDivisor(Callback):
     def on_epoch_end(self, epoch, logs={}):
         current_score = logs.get('val_acc')
         divide = False
+        #学习率下降的条件：
+                       # 1，轮回次数到了
+                       # 2，或者分数到了一定程度 暂时未知
         if (epoch + 1) in self.checkpoints:
             divide = True
         elif (current_score >= self.previous_score - self.epsilon and current_score <= self.previous_score + self.epsilon):
@@ -133,7 +141,7 @@ def schedule(epoch):
 
 def learnVectorBlock(I, featmaps, filter_size, act, bnArgs):
     """Learn initial vector component for input."""
-
+    # "**"表示为字典变量
     O = BatchNormalization(**bnArgs)(I)
     O = Activation(act)(O)
     O = Convolution2D(featmaps, filter_size,
@@ -155,13 +163,13 @@ def learnVectorBlock(I, featmaps, filter_size, act, bnArgs):
 
 def getResidualBlock(I, mode, filter_size, featmaps, activation, shortcut, convArgs, bnArgs):
     """Get residual block."""
-    
     if mode == "real":
         O = BatchNormalization(**bnArgs)(I)
     elif mode == "complex":
         O = ComplexBatchNormalization(**bnArgs)(I)
     elif mode == "quaternion":
         O = QuaternionBatchNormalization(**bnArgs)(I)
+
     O = Activation(activation)(O)
 
     if shortcut == 'regular':
@@ -365,7 +373,7 @@ if __name__ == '__main__':
                   "dropout": 0,
                   "batch_size": 32,
                   "num_epochs": 200,
-                  "dataset": "cifar100",
+                  "dataset": "cifar10",
                   "act": "relu",
                   "init": "quaternion",
                   "lr": 1e-3,

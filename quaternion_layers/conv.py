@@ -20,6 +20,7 @@ from keras.models import Model
 from .bn import QuaternionBN as quaternion_normalization
 from .bn import sqrt_init
 from .init import QuaternionInit
+from keras.backend.common import normalize_data_format
 from .norm import LayerNormalization, QuaternionLayerNorm
 
 
@@ -115,7 +116,7 @@ class QuaternionConv(Layer):
         self.kernel_size = conv_utils.normalize_tuple(kernel_size, rank, 'kernel_size')
         self.strides = conv_utils.normalize_tuple(strides, rank, 'strides')
         self.padding = conv_utils.normalize_padding(padding)
-        self.data_format = 'channels_last' if rank == 1 else conv_utils.normalize_data_format(data_format)
+        self.data_format = 'channels_last' if rank == 1 else normalize_data_format(data_format)
         self.dilation_rate = conv_utils.normalize_tuple(dilation_rate, rank, 'dilation_rate')
         self.activation = activations.get(activation)
         self.use_bias = use_bias

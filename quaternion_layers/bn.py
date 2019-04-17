@@ -89,7 +89,7 @@ def quaternion_standardization(input_centred,
     else:
         raise ValueError(
             'Incorrect Batchnorm combination of axis and dimensions. axis should be either 1 or -1. '
-            'axis: ' + str(self.axis) + '; ndim: ' + str(ndim) + '.'
+            'axis: ' + str(axis) + '; ndim: ' + str(ndim) + '.'
         )
 
     input1 = K.concatenate([centred_r, centred_r, centred_r, centred_r], axis=axis)
@@ -204,7 +204,7 @@ def QuaternionBN(input_centred,
         else:
             raise ValueError(
                 'Incorrect Batchnorm combination of axis and dimensions. axis should be either 1 or -1. '
-                'axis: ' + str(self.axis) + '; ndim: ' + str(ndim) + '.'
+                'axis: ' + str(axis) + '; ndim: ' + str(ndim) + '.'
             )
 
         input1 = K.concatenate([centred_r, centred_r, centred_r, centred_r], axis=axis)
