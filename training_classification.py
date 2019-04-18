@@ -6,6 +6,7 @@
 
 # Imports
 import sys
+from dataset import *
 sys.setrecursionlimit(10000)
 import logging as L
 import numpy as np
@@ -25,6 +26,7 @@ from keras.preprocessing.image import ImageDataGenerator
 from keras.regularizers import l2
 from keras.utils.np_utils import to_categorical
 import keras.backend as K
+from keras.utils import plot_model
 K.set_image_data_format('channels_first')
 K.set_image_dim_ordering('th')
 
@@ -291,15 +293,28 @@ def getModel(params):
     elif dataset == 'cifar100':
         O = Dense(100, activation='softmax', kernel_regularizer=l2(0.0001))(O)
 
-    model = Model(R, O)
-    opt = SGD (lr = params.lr,
-               momentum = params.momentum,
-               decay = params.decay,
-               nesterov = True,
-               clipnorm = params.clipnorm)
-    model.compile(opt, 'categorical_crossentropy', metrics=['accuracy'])
+    return O
+
+def getModel_change(params,O1,O2):
+    inputShape = (3, 32, 32)
+    R = Input(shape=inputShape)
+    O1=getModel(params)
+    O2=getModel(params)
+    model = Model(R,O1,O2)
+    opt = SGD(lr=params.lr,
+              momentum=params.momentum,
+              decay=params.decay,
+              nesterov=True,
+              clipnorm=params.clipnorm)
+    model.compile(opt,loss=loss, metrics=['accuracy'])
     return model
 
+def loss(model1,model2,y):
+    y_ = np.sqrt(np.reduce_sum(np.pow(np.subtract(model1, model2), 2), 1, keep_dims=True), name='distance')
+    l1 = np.multiply(y, np.square(y_))
+    l2 = np.multiply(np.subtract(1.0, y), np.pow(np.maximum(np.subtract(1.0, y_), 0), 2))
+    loss = np.reduce_mean(np.add(l1, l2))
+    return loss
 
 def train(params, model):
     if params.dataset == 'cifar10':
@@ -330,13 +345,17 @@ def train(params, model):
 
     pixel_mean = np.mean(X_train_split, axis=0)
 
-    X_train = X_train_split.astype(np.float32) - pixel_mean
+    X_train_left = X_train_split.astype(np.float32) - pixel_mean
     X_val = X_val_split.astype(np.float32) - pixel_mean
     X_test = X_test.astype(np.float32) - pixel_mean
 
     Y_train = to_categorical(y_train_split, nb_classes)
     Y_val = to_categorical(y_val_split, nb_classes)
     Y_test = to_categorical(y_test, nb_classes)
+
+    batch_left, batch_right, batch_similar, idx = get_batch_image_path(left_train, right_train, similar_train, idx)
+    batch_left_arr, batch_right_arr, batch_similar_arr = \
+        get_batch_image_array(batch_left, batch_right, batch_similar)
 
     datagen = ImageDataGenerator(height_shift_range=0.125,
                                  width_shift_range=0.125,
@@ -350,7 +369,7 @@ def train(params, model):
                  lrSchedCb,
                  trainValHistCb]
 
-    model.fit_generator(generator=datagen.flow(X_train, Y_train, batch_size=params.batch_size),
+    model.fit_generator(generator=datagen.flow(left_train,right_train,similar_train, batch_size=params.batch_size),
                         steps_per_epoch=(len(X_train)+params.batch_size-1) // params.batch_size,
                         epochs=params.num_epochs,
                         verbose=1,
@@ -371,8 +390,8 @@ if __name__ == '__main__':
                   "num_blocks": 10,
                   "start_filter": 24,
                   "dropout": 0,
-                  "batch_size": 32,
-                  "num_epochs": 200,
+                  "batch_size": 2,
+                  "num_epochs": 10,
                   "dataset": "cifar10",
                   "act": "relu",
                   "init": "quaternion",
@@ -384,4 +403,5 @@ if __name__ == '__main__':
     
     params = Params(param_dict)
     model = getModel(params)
+    plot_model(model, to_file='model.png')
     train(params, model)

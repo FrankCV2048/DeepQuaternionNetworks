@@ -10,7 +10,7 @@ class Params:
         for k, v in dictionary.items():
             setattr(self, k, v)
 
-            
+#将输入的维度每四个一分
 def get_r(x):
     image_format = K.image_data_format()
     ndim = K.ndim(x)
@@ -45,7 +45,6 @@ def get_i(x):
         return x[:, :, :, input_dim:input_dim*2]
     elif ndim == 5:
         return x[:, :, :, :, input_dim:input_dim*2]
-
 
 def get_j(x):
     image_format = K.image_data_format()
