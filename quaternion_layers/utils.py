@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import keras.backend as K
 from keras.layers import Lambda, Layer
 
@@ -10,7 +7,7 @@ class Params:
         for k, v in dictionary.items():
             setattr(self, k, v)
 
-#将输入的维度每四个一分
+
 def get_r(x):
     image_format = K.image_data_format()
     ndim = K.ndim(x)
@@ -36,15 +33,16 @@ def get_i(x):
 
     if (image_format == 'channels_first' and ndim != 3) or ndim == 2:
         input_dim = input_shape[1] // 4
-        return x[:, input_dim:input_dim*2]
+        return x[:, input_dim:input_dim * 2]
 
     input_dim = input_shape[1] // 4
     if ndim == 3:
-        return x[:, :, input_dim:input_dim*2]
+        return x[:, :, input_dim:input_dim * 2]
     elif ndim == 4:
-        return x[:, :, :, input_dim:input_dim*2]
+        return x[:, :, :, input_dim:input_dim * 2]
     elif ndim == 5:
-        return x[:, :, :, :, input_dim:input_dim*2]
+        return x[:, :, :, :, input_dim:input_dim * 2]
+
 
 def get_j(x):
     image_format = K.image_data_format()
@@ -53,15 +51,15 @@ def get_j(x):
 
     if (image_format == 'channels_first' and ndim != 3) or ndim == 2:
         input_dim = input_shape[1] // 4
-        return x[:, input_dim*2:input_dim*3]
+        return x[:, input_dim * 2:input_dim * 3]
 
     input_dim = input_shape[1] // 4
     if ndim == 3:
-        return x[:, :, input_dim*2:input_dim*3]
+        return x[:, :, input_dim * 2:input_dim * 3]
     elif ndim == 4:
-        return x[:, :, :, input_dim*2:input_dim*3]
+        return x[:, :, :, input_dim * 2:input_dim * 3]
     elif ndim == 5:
-        return x[:, :, :, :, input_dim*2:input_dim*3]
+        return x[:, :, :, :, input_dim * 2:input_dim * 3]
 
 
 def get_k(x):
@@ -71,15 +69,15 @@ def get_k(x):
 
     if (image_format == 'channels_first' and ndim != 3) or ndim == 2:
         input_dim = input_shape[1] // 4
-        return x[:, input_dim*3:]
+        return x[:, input_dim * 3:]
 
     input_dim = input_shape[1] // 4
     if ndim == 3:
-        return x[:, :, input_dim*3:]
+        return x[:, :, input_dim * 3:]
     elif ndim == 4:
-        return x[:, :, :, input_dim*3:]
+        return x[:, :, :, input_dim * 3:]
     elif ndim == 5:
-        return x[:, :, :, :, input_dim*3:]
+        return x[:, :, :, :, input_dim * 3:]
 
 
 def getpart_output_shape(input_shape):
@@ -96,26 +94,34 @@ def getpart_output_shape(input_shape):
 
     return tuple(returned_shape)
 
+
 class GetR(Layer):
     def call(self, inputs):
         return get_r(inputs)
+
     def compute_output_shape(self, input_shape):
         return getpart_output_shape(input_shape)
+
 
 class GetI(Layer):
     def call(self, inputs):
         return get_i(inputs)
+
     def compute_output_shape(self, input_shape):
         return getpart_output_shape(input_shape)
+
 
 class GetJ(Layer):
     def call(self, inputs):
         return get_j(inputs)
+
     def compute_output_shape(self, input_shape):
         return getpart_output_shape(input_shape)
+
 
 class GetK(Layer):
     def call(self, inputs):
         return get_k(inputs)
+
     def compute_output_shape(self, input_shape):
         return getpart_output_shape(input_shape)

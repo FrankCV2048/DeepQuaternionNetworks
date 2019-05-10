@@ -12,7 +12,7 @@ def gen_batch(shape, batch_size):
     # Get list of all images
     image_names = []
     for image_name in os.listdir(image_folder):
-        image_names.append(image_name)
+        image_names.append(image_n3ame)
 
     # Augment object
     idg = ImageDataGenerator(rotation_range=0,
@@ -20,8 +20,8 @@ def gen_batch(shape, batch_size):
                              height_shift_range=0.2,
                              shear_range=0,
                              zoom_range=0.2,
-                             horizontal_flip=True,
-                             vertical_flip=False)
+
+                             rtical_flip=False)
 
     # Batch Loop
     image_count = len(image_names)
