@@ -1,10 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-# Authors: Chase Gaudet
-# code based on work by Chiheb Trabelsi
-# on Deep Complex Networks git source
-
-# Imports
 import sys
 
 sys.setrecursionlimit(10000)
@@ -374,7 +367,7 @@ if __name__ == '__main__':
                   "dropout": 0,
                   "batch_size": 32,
                   "num_epochs": 200,
-                  "dataset": "cifar10",
+                  "dataset": "cifar100",
                   "act": "relu",
                   "init": "quaternion",
                   "lr": 1e-3,
