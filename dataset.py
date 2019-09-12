@@ -79,9 +79,9 @@ left_shuffled = left_image_path_list[shuffle_indices]
 right_shuffled = right_image_path_list[shuffle_indices]
 similar_shuffled = similar_list[shuffle_indices]
 #71356
-left_train, left_dev = left_shuffled[:20050], left_shuffled[51816:]
-right_train, right_dev = right_shuffled[:20050], right_shuffled[51816:]
-similar_train, similar_dev = similar_shuffled[:20050], similar_shuffled[51816:]
+left_train, left_dev = left_shuffled[:25000], left_shuffled[26280:]
+right_train, right_dev = right_shuffled[:25000], right_shuffled[26280:]
+similar_train, similar_dev = similar_shuffled[:25000], similar_shuffled[26280:]
 
 #自定义
 def random_mini_batches(left, right, similar, mini_batch_size=16, seed=0):

@@ -320,7 +320,7 @@ def get_im_cv2(paths, img_rows=512, img_cols=512, color_type=3, normalize=True):
         if color_type == 1:
             img = Image.open(path)
         elif color_type == 3:
-            if '.jpg' in path:
+            if '.JPEG' in path:
                 #img = cv2.imdecode(np.fromfile(path, dtype=np.uint8), -1)
                 img = Image.open(path)
                 img =img.resize((PICTURE_SIZE,PICTURE_SIZE),Image.ANTIALIAS)
@@ -395,7 +395,7 @@ callbacks = [
 ]
 
 model.fit_generator(generator=get_train_batch(left_train, right_train, similar_train,10),
-                             steps_per_epoch=20050,
+                             steps_per_epoch=25000,
                              epochs=10,
                              verbose=1,
                              validation_data=([get_im_cv2(left_dev), get_im_cv2(right_dev)],similar_dev),

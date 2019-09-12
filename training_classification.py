@@ -279,6 +279,7 @@ def getModel(params):
     O = Flatten()(O)
 
     # Dense
+
     if dataset == 'cifar10':
         O = Dense(10, activation='softmax', kernel_regularizer=l2(0.0001))(O)
     elif dataset == 'cifar100':

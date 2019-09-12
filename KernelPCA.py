@@ -1,5 +1,7 @@
 import tensorflow as tf
 def pca_data(input):
+
+
     m, n = 10, 1000
     # assert not tf.assert_less(128, n)
     mean = tf.reduce_mean(input, axis=1)
@@ -7,7 +9,8 @@ def pca_data(input):
     # 协方差矩阵
     cov = tf.matmul(x_new, x_new, transpose_a=True) / m
     e, v = tf.linalg.eigh(cov, name="eigh")
-    e_index_sort = tf.math.top_k(e, sorted=True, k=128)[1]
+
+    e_index_sort = tf.nn.top_k(e, sorted=True, k=128)[1]
     v_new = tf.gather(v, indices=e_index_sort)
     pca = tf.matmul(x_new, v_new, transpose_b=True,name='PCATra')#这一层没问题
     return pca
